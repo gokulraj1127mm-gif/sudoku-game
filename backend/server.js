@@ -1,22 +1,21 @@
-const express=require("express")
-const cors=require("cors")
+const express = require("express");
+const cors = require("cors");
 
-const {generateSudoku}=require("./sudokuGenerator")
+const { generateSudoku } = require("./sudokuGenerator");
 
-const app=express()
+const app = express();
 
-app.use(cors())
+// Allow requests from any origin
+app.use(cors());
 
-app.get("/api/sudoku",(req,res)=>{
+app.get("/api/sudoku", (req, res) => {
+  const level = req.query.level || "easy";
+  const puzzle = generateSudoku(level);
+  res.json(puzzle);
+});
 
-const level=req.query.level || "easy"
-
-const puzzle=generateSudoku(level)
-
-res.json(puzzle)
-
-})
-
-app.listen(5000,()=>{
-console.log("Server running on port 5000")
-})
+// Use Render’s PORT or default 5000
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
