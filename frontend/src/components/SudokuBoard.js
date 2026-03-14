@@ -1,50 +1,52 @@
-import React,{useState} from "react"
+import React,{useState} from "react";
 
 function SudokuBoard({board,setBoard,fixed}){
 
-const [selected,setSelected]=useState(null)
+const [selected,setSelected]=useState(null);
 
 const isValid=(row,col,val)=>{
 
 for(let i=0;i<9;i++){
 
-if(i!==col && board[row][i]==val) return false
-if(i!==row && board[i][col]==val) return false
+if(i!==col && board[row][i]===val) return false;
+if(i!==row && board[i][col]===val) return false;
 
 }
 
-const sr=Math.floor(row/3)*3
-const sc=Math.floor(col/3)*3
+const sr=Math.floor(row/3)*3;
+const sc=Math.floor(col/3)*3;
 
-for(let i=0;i<3;i++)
+for(let i=0;i<3;i++){
 for(let j=0;j<3;j++){
 
-let r=sr+i
-let c=sc+j
+let r=sr+i;
+let c=sc+j;
 
-if((r!==row||c!==col)&&board[r][c]==val)
-return false
-
+if((r!==row || c!==col) && board[r][c]===val){
+return false;
 }
 
-return true
 }
+}
+
+return true;
+};
 
 const change=(r,c,v)=>{
 
-if(fixed[r][c]) return
+if(fixed[r][c]) return;
 
-if(v<1||v>9) v=""
+/* allow only numbers 1-9 */
 
-let newBoard=[...board]
+if(!/^[1-9]?$/.test(v)) return;
 
-newBoard[r]=[...newBoard[r]]
+let newBoard = board.map(row => [...row]);
 
-newBoard[r][c]=v?parseInt(v):0
+newBoard[r][c] = v === "" ? 0 : parseInt(v);
 
-setBoard(newBoard)
+setBoard(newBoard);
 
-}
+};
 
 return(
 
@@ -54,21 +56,27 @@ return(
 
 row.map((cell,c)=>{
 
-const invalid=cell!==0&&!isValid(r,c,cell)
+const invalid = cell!==0 && !isValid(r,c,cell);
 
 return(
 
 <input
 key={`${r}-${c}`}
-value={cell===0?"":cell}
-onClick={()=>setSelected([r,c])}
-onChange={(e)=>change(r,c,e.target.value)}
-maxLength="1"
+type="text"
+inputMode="numeric"
+value={cell===0 ? "" : cell}
 
-className={`cell 
-${fixed[r][c]?"fixed":""}
-${selected&&selected[0]===r&&selected[1]===c?"selected":""}
-${invalid?"invalid":""}`}
+onClick={()=>setSelected([r,c])}
+
+onChange={(e)=>change(r,c,e.target.value)}
+
+maxLength={1}
+
+className={`cell
+${fixed[r][c] ? "fixed" : ""}
+${selected && selected[0]===r && selected[1]===c ? "selected" : ""}
+${invalid ? "invalid" : ""}`}
+
 />
 
 )
@@ -83,4 +91,4 @@ ${invalid?"invalid":""}`}
 
 }
 
-export default SudokuBoard
+export default SudokuBoard;
